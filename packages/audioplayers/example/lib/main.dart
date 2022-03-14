@@ -347,17 +347,17 @@ class _AdvancedState extends State<Advanced> {
                   Btn(
                     txt: 'STOP',
                     onPressed: () =>
-                        widget.advancedPlayer.setReleaseMode(ReleaseMode.stop),
+                        widget.advancedPlayer.setReleaseMode(ReleaseMode.STOP),
                   ),
                   Btn(
                     txt: 'LOOP',
                     onPressed: () =>
-                        widget.advancedPlayer.setReleaseMode(ReleaseMode.loop),
+                        widget.advancedPlayer.setReleaseMode(ReleaseMode.LOOP),
                   ),
                   Btn(
                     txt: 'RELEASE',
                     onPressed: () => widget.advancedPlayer
-                        .setReleaseMode(ReleaseMode.release),
+                        .setReleaseMode(ReleaseMode.RELEASE),
                   ),
                 ],
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

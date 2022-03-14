@@ -62,8 +62,10 @@ class AudioPlayer {
   PlayerState get state => _playerState;
 
   set state(PlayerState state) {
-    _playerStateController.add(state);
-    _playerState = state;
+    if (!_playerStateController.isClosed) {
+      _playerStateController.add(state);
+      _playerState = state;
+    }
   }
 
   set playingRouteState(PlayingRoute routeState) {
@@ -72,8 +74,10 @@ class AudioPlayer {
 
   // TODO(luan) why do we need two methods for setting state?
   set notificationState(PlayerState state) {
-    _notificationPlayerStateController.add(state);
-    _playerState = state;
+    if (!_notificationPlayerStateController.isClosed) {
+      _notificationPlayerStateController.add(state);
+      _playerState = state;
+    }
   }
 
   /// Stream of changes on player state.
@@ -103,7 +107,7 @@ class AudioPlayer {
   /// Events are sent every time an audio is finished, therefore no event is
   /// sent when an audio is paused or stopped.
   ///
-  /// [ReleaseMode.loop] also sends events to this stream.
+  /// [ReleaseMode.LOOP] also sends events to this stream.
   Stream<void> get onPlayerCompletion => _completionController.stream;
 
   /// Stream of seek completions.
@@ -408,25 +412,35 @@ class AudioPlayer {
       case 'audio.onDuration':
         final millis = callArgs['value'] as int;
         final newDuration = Duration(milliseconds: millis);
-        player._durationController.add(newDuration);
+        if (!player._durationController.isClosed) {
+          player._durationController.add(newDuration);
+        }
         break;
       case 'audio.onCurrentPosition':
         final millis = callArgs['value'] as int;
         final newDuration = Duration(milliseconds: millis);
-        player._positionController.add(newDuration);
+        if (!player._positionController.isClosed) {
+          player._positionController.add(newDuration);
+        }
         break;
       case 'audio.onComplete':
         player.state = PlayerState.completed;
-        player._completionController.add(null);
+        if (!player._completionController.isClosed) {
+          player._completionController.add(null);
+        }
         break;
       case 'audio.onSeekComplete':
         final complete = callArgs['value'] as bool;
-        player._seekCompleteController.add(complete);
+        if (!player._completionController.isClosed) {
+          player._completionController.add(complete);
+        }
         break;
       case 'audio.onError':
         final error = callArgs['value'] as String;
         player.state = PlayerState.stopped;
-        player._errorController.add(error);
+        if (!player._completionController.isClosed) {
+          player._completionController.add(error);
+        }
         break;
       case 'audio.onGotNextTrackCommand':
         player.notificationService.notifyNextTrack();
